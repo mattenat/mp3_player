@@ -31,19 +31,20 @@ module Mp3Player
     # * :width => width of the player when open in pixels, defaults to 290
     # * :id => id of the div wrapping the player, defaults to "#{track_name}_player"
     # * :class => class of the div wrapping the player, defaults to "mp3_player"
-  	OTHER_PARAMS = [:width, :class, :id]
+  	OTHER_PARAMS = [:width, :class, :id, :audio_path]
 
 
 
 
     # This is the helper method you'll call in the view. <b><%= mp3_player "Pulling The Plug On The Party" %></b>
     # See the options above for more info on customising the player to match your site
-    def mp3_player(track_name, options = {})
+    def mp3_player(track_url, options = {})
+      track_name = File.basename(URI.parse(track_url).path).sub(/\.[^.]+$/, '')
       BOOLEAN_PARAMS.map {|k| options[k] == true ? options[k] = "yes" : options[k] = "no"}
-      options.reverse_merge!(:id => "#{track_name.split(" ").join("_")}_player", :class => "mp3_player", :width => 290,:text => "222222", :bg => "bbbbbb", 
+      options.reverse_merge!(:id => "#{track_name}_player", :class => "mp3_player", :width => 290,:text => "222222", :bg => "bbbbbb", 
       											:left_bg => "AAAAAA", :right_bg => "AAAAAA", :right_bg_hover => "EEEEEE", 
       											:left_icon => "222222", :right_icon => "222222", :right_icon_hover => "555555", 
-      											:slider => "333333", :loader => "DDDFFF", :track => "888888",:border => "333333")
+      											:slider => "333333", :loader => "DDDFFF", :track => "888888",:border => "333333", :audio_path => AUDIO_PATH)
       options.assert_valid_keys(COLOR_PARAMS + BOOLEAN_PARAMS + OTHER_PARAMS)
       concat "\n"
       concat "<div id=\"#{options[:id]}\" class=\"#{options[:class]}\">\n"
@@ -53,7 +54,7 @@ module Mp3Player
       OTHER_PARAMS.map {|k| options.delete(k) }
       COLOR_PARAMS.map { |k| options[k] = "0x#{options[k]}"}
       options.each {|k,v| params << "#{k.to_s.gsub("_", "")}=#{v.to_s}&amp;"}
-    	concat "    <param name=\"FlashVars\" value=\"#{params}playerID=#{track_name}&amp;soundFile=#{AUDIO_PATH}/" + track_name + ".mp3\" />\n"
+      concat "    <param name=\"FlashVars\" value=\"#{params}playerID=#{track_name}&amp;soundFile=#{track_url}\" />\n"
       concat "    <param name=\"quality\" value=\"high\" />\n"
       concat "    <param name=\"menu\" value=\"true\" />\n"
     	concat "    <param name=\"wmode\" value=\"transparent\" />\n"
