@@ -26,7 +26,7 @@ module Mp3Player
     # These options are boolean values that should be converted to "yes" or "no" for the flash object
     # * :autostart => should the track start playing on page load? defaults to false
     # * :loop => should the track loop continuously? defaults to false
-    BOOLEAN_PARAMS = [:autostart, :loop]
+    BOOLEAN_PARAMS = [:autostart, :loop, :animation]
 
     # * :width => width of the player when open in pixels, defaults to 290
     # * :id => id of the div wrapping the player, defaults to "#{track_name}_player"
